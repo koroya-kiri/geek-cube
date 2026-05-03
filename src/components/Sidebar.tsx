@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, Boxes, Search, Star } from 'lucide-react'
+import { Menu, X, Boxes, Search, Star, Puzzle } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { toolCategories } from '../utils/tools.ts'
 import { useFavorites } from '../hooks/useFavorites.ts'
+import { usePlugins } from '../hooks/usePlugins.tsx'
 
 interface SidebarProps {
   onSearchOpen: () => void
@@ -12,6 +13,8 @@ export default function Sidebar({ onSearchOpen }: SidebarProps) {
   const [open, setOpen] = useState(false)
   const location = useLocation()
   const { favorites, toggle, isFavorite } = useFavorites()
+  const { plugins } = usePlugins()
+  const enabledPlugins = plugins.filter(p => p.enabled)
 
   useEffect(() => { setOpen(false) }, [location.pathname])
 
@@ -53,6 +56,25 @@ export default function Sidebar({ onSearchOpen }: SidebarProps) {
             <span>搜索工具</span>
             <kbd className="ml-auto px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] text-[10px] font-mono text-gray-500">⌘K</kbd>
           </button>
+
+          {/* Plugin Manager — standout at top */}
+          <Link
+            to="/tools/plugin-manager"
+            className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+              location.pathname === '/tools/plugin-manager'
+                ? 'bg-neon-purple/10 text-neon-purple border border-neon-purple/20'
+                : 'text-gray-400 hover:text-white hover:bg-neon-purple/5 border border-transparent'
+            }`}
+          >
+            <Puzzle size={16} className={location.pathname === '/tools/plugin-manager' ? 'text-neon-purple' : 'text-gray-500'} />
+            <span>插件工坊</span>
+            <span className="ml-auto text-[9px] px-1.5 py-0.5 rounded-md font-mono"
+              style={{
+                background: 'rgba(184,71,240,.15)',
+                color: '#b847f0',
+                border: '1px solid rgba(184,71,240,.3)',
+              }}>BETA</span>
+          </Link>
         </div>
 
         {/* Favorites section */}
@@ -115,13 +137,54 @@ export default function Sidebar({ onSearchOpen }: SidebarProps) {
                         title={fav ? '取消收藏' : '收藏'}
                       >
                         <Star size={10} className={fav ? 'fill-current' : ''} />
-                      </button>
+          </button>
+
+          {/* Plugin Manager — standout */}
+          <Link
+            to="/tools/plugin-manager"
+            className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+              location.pathname === '/tools/plugin-manager'
+                ? 'bg-neon-purple/10 text-neon-purple border border-neon-purple/20'
+                : 'text-gray-400 hover:text-white hover:bg-neon-purple/5 border border-transparent'
+            }`}
+          >
+            <Puzzle size={16} className={location.pathname === '/tools/plugin-manager' ? 'text-neon-purple' : 'text-gray-500'} />
+            <span>插件工坊</span>
+            <span className="ml-auto text-[9px] px-1.5 py-0.5 rounded-md font-mono"
+              style={{
+                background: 'rgba(184,71,240,.15)',
+                color: '#b847f0',
+                border: '1px solid rgba(184,71,240,.3)',
+              }}>BETA</span>
+          </Link>
                     </div>
                   )
                 })}
               </div>
             </div>
           ))}
+
+          {/* Plugin tools */}
+          {enabledPlugins.length > 0 && (
+            <div>
+              <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest flex items-center gap-1.5" style={{ color: '#b847f0' }}>
+                <Puzzle size={10} /> 我的插件
+              </p>
+              <div className="space-y-0.5">
+                {enabledPlugins.map(p => {
+                  const isActive = location.pathname === `/plugins/${p.id}`
+                  return (
+                    <Link key={p.id} to={`/plugins/${p.id}`}
+                      className={`relative flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all duration-200 ${isActive ? 'bg-neon-purple/8 text-neon-purple' : 'text-gray-400 hover:text-white hover:bg-neon-purple/5'}`}>
+                      {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-r-full bg-neon-purple" />}
+                      <Puzzle size={14} className={isActive ? 'text-neon-purple' : 'text-gray-500'} />
+                      <span className="font-medium text-[13px] truncate">{p.name}</span>
+                    </Link>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </nav>
 
         <div className="px-5 py-4 border-t border-white/[0.05]">

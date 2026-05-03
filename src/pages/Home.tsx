@@ -2,10 +2,12 @@ import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { toolCategories } from '../utils/tools.ts'
 import type { LucideIcon } from 'lucide-react'
-import { Code2, Braces, Dice5, Globe, AlignLeft, Image, Shield, Eye, Server, Lock, Boxes, LayoutGrid, Gauge, X, Minus, Plus, Settings } from 'lucide-react'
+import { Code2, Braces, Dice5, Globe, AlignLeft, Image, Shield, Eye, Server, Lock, Boxes, LayoutGrid, Gauge, X, Minus, Plus, Settings, Puzzle } from 'lucide-react'
 import NodeGraph, { generateNodeLayout, type GraphNode, LAYOUT_NAMES, LAYOUTS } from '../components/NodeGraph'
 import { BreathingDot } from '../components/HUD'
-import { useBg } from '../hooks/useBg.tsx'
+import { useBg, type ThemeName } from '../hooks/useBg.tsx'
+import { usePlugins } from '../hooks/usePlugins.tsx'
+import { useNavigate } from 'react-router-dom'
 
 const CAT_ICONS: Record<string, LucideIcon> = {
   pdf: Lock, codec: Code2, format: Braces, generator: Dice5,
@@ -56,6 +58,9 @@ export default function Home() {
   const [distancePanelOpen, setDistancePanelOpen] = useState(false)
   const [settingsPanelOpen, setSettingsPanelOpen] = useState(false)
   const { settings, set } = useBg()
+  const { plugins } = usePlugins()
+  const navigate = useNavigate()
+  const enabledPlugins = plugins.filter(p => p.enabled)
 
   // Persist state on change
   useEffect(() => {
@@ -237,13 +242,26 @@ export default function Home() {
               <Settings size={22} style={{ color: settingsPanelOpen ? '#ff00aa' : '#555', transition: 'color 0.3s', filter: settingsPanelOpen ? 'drop-shadow(0 0 6px rgba(255,0,170,.5))' : 'none' }} />
             </div>
           </button>
+
+          <div className="h-px mx-3" style={{ background: 'rgba(255,255,255,.04)' }} />
+
+          {/* Plugin Workshop */}
+          <button onClick={() => navigate('/tools/plugin-manager')}
+            className="group flex items-center gap-3 px-5 py-4 transition-all duration-300 hover:bg-white/[0.04]"
+            title="插件工坊">
+            <div className="flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300 group-hover:scale-110"
+              style={{ background: 'rgba(184,71,240,.06)' }}>
+              <Puzzle size={22} style={{ color: '#555', transition: 'color 0.3s', filter: 'none' }}
+                className="group-hover:![color:#b847f0] group-hover:![filter:drop-shadow(0_0_6px_rgba(184,71,240,.5))]" />
+            </div>
+          </button>
         </div>
       </div>
 
       {/* ─── Layout Panel ─── */}
       {layoutPanelOpen && (
         <div className="fixed inset-0 z-30" onClick={() => setLayoutPanelOpen(false)}>
-          <div className="absolute left-20 z-40 animate-scaleIn" style={{ top: '35%' }} onClick={e => e.stopPropagation()}>
+          <div className="absolute left-20 z-40 animate-scaleIn" style={{ top: '50%', transform: 'translateY(-50%)' }} onClick={e => e.stopPropagation()}>
             <div className="rounded-2xl p-5 w-56" style={{
               background: 'rgba(8,8,20,.92)', backdropFilter: 'blur(30px)',
               border: '1px solid rgba(0,242,255,.12)',
@@ -280,7 +298,7 @@ export default function Home() {
       {/* ─── Distance / Spacing Panel ─── */}
       {distancePanelOpen && (
         <div className="fixed inset-0 z-30" onClick={() => setDistancePanelOpen(false)}>
-          <div className="absolute left-20 z-40 animate-scaleIn" style={{ top: '8%', maxHeight: '85vh' }} onClick={e => e.stopPropagation()}>
+          <div className="absolute left-20 z-40 animate-scaleIn" style={{ top: '50%', transform: 'translateY(-50%)', maxHeight: '85vh' }} onClick={e => e.stopPropagation()}>
             <div className="rounded-2xl p-5 w-72" style={{
               background: 'rgba(8,8,20,.92)', backdropFilter: 'blur(30px)',
               border: '1px solid rgba(0,255,136,.12)',
@@ -355,7 +373,7 @@ export default function Home() {
       {/* ─── Settings Panel ─── */}
       {settingsPanelOpen && (
         <div className="fixed inset-0 z-30" onClick={() => setSettingsPanelOpen(false)}>
-          <div className="absolute left-20 z-40 animate-scaleIn" style={{ top: '22%' }} onClick={e => e.stopPropagation()}>
+          <div className="absolute left-20 z-40 animate-scaleIn" style={{ top: '50%', transform: 'translateY(-50%)' }} onClick={e => e.stopPropagation()}>
             <div className="rounded-2xl p-5 w-56" style={{
               background: 'rgba(8,8,20,.92)', backdropFilter: 'blur(30px)',
               border: '1px solid rgba(255,0,170,.12)',
@@ -369,6 +387,28 @@ export default function Home() {
                 <button onClick={() => setSettingsPanelOpen(false)} className="w-6 h-6 rounded-lg flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/[0.06] transition-colors"><X size={14} /></button>
               </div>
               <div className="space-y-1">
+                <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-2 px-3">霓虹主题</div>
+                {([
+                  { k: 'cyan' as ThemeName, l: '青 Cyber', c: '#00f0ff' },
+                  { k: 'green' as ThemeName, l: '绿 Matrix', c: '#00ff41' },
+                  { k: 'amber' as ThemeName, l: '琥珀 Warm', c: '#ffaa00' },
+                  { k: 'magenta' as ThemeName, l: '品红 Neo', c: '#ff00aa' },
+                ]).map(({ k, l, c }) => (
+                  <button key={k} onClick={() => set({ theme: k })} className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200"
+                    style={{
+                      background: settings.theme === k ? `${c}12` : 'transparent',
+                      border: settings.theme === k ? `1px solid ${c}30` : '1px solid transparent',
+                    }}>
+                    <span className="w-3 h-3 rounded-full" style={{ background: c, boxShadow: settings.theme === k ? `0 0 8px ${c}` : 'none' }} />
+                    <span className="text-sm font-medium" style={{ color: settings.theme === k ? c : '#999' }}>{l}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="h-px mx-1" style={{ background: 'rgba(255,255,255,.04)' }} />
+
+              <div className="space-y-1">
+                <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-2 px-3">背景效果</div>
                 {[
                   { k: 'particles' as const, l: '粒子连线' },
                   { k: 'grid' as const, l: '网格' },
@@ -480,6 +520,25 @@ export default function Home() {
           </Link>
         )
       })}
+
+      {/* Plugin widgets */}
+      {enabledPlugins.length > 0 && (
+        <div className="absolute bottom-16 left-4 right-4 z-20 flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'thin' }}>
+          {enabledPlugins.map(p => (
+            <Link key={p.id} to={`/plugins/${p.id}`}
+              className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all hover:scale-105"
+              style={{
+                background: 'rgba(184,71,240,.1)',
+                border: '1px solid rgba(184,71,240,.2)',
+                backdropFilter: 'blur(12px)',
+              }}>
+              <Puzzle size={14} style={{ color: '#b847f0' }} />
+              <span className="text-xs font-medium whitespace-nowrap" style={{ color: '#d0a0f0' }}>{p.name}</span>
+              <span className="text-[9px] font-mono" style={{ color: 'rgba(184,71,240,.4)' }}>v{p.version}</span>
+            </Link>
+          ))}
+        </div>
+      )}
 
       {/* Status bar */}
       <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">

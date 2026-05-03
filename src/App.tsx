@@ -28,6 +28,35 @@ const HttpHeadersTool = lazy(() => import('./pages/HttpHeadersTool'))
 const PdfRotateTool = lazy(() => import('./pages/PdfRotateTool'))
 const PdfReorderTool = lazy(() => import('./pages/PdfReorderTool'))
 const PdfPageRemoverTool = lazy(() => import('./pages/PdfPageRemoverTool'))
+const PdfViewerTool = lazy(() => import('./pages/PdfViewerTool'))
+const PluginManager = lazy(() => import('./pages/PluginManager'))
+const PluginPage = lazy(() => import('./pages/PluginPage'))
+const MorseTool = lazy(() => import('./pages/MorseTool'))
+const BinaryTextTool = lazy(() => import('./pages/BinaryTextTool'))
+const ReverseTextTool = lazy(() => import('./pages/ReverseTextTool'))
+const SlugTool = lazy(() => import('./pages/SlugTool'))
+const LineNumberTool = lazy(() => import('./pages/LineNumberTool'))
+const RemoveEmptyTool = lazy(() => import('./pages/RemoveEmptyTool'))
+const TextRepeatTool = lazy(() => import('./pages/TextRepeatTool'))
+const CharCountTool = lazy(() => import('./pages/CharCountTool'))
+const PercentageTool = lazy(() => import('./pages/PercentageTool'))
+const AspectRatioTool = lazy(() => import('./pages/AspectRatioTool'))
+const UnitConverterTool = lazy(() => import('./pages/UnitConverterTool'))
+const RandomColorTool = lazy(() => import('./pages/RandomColorTool'))
+const RandomStringTool = lazy(() => import('./pages/RandomStringTool'))
+const MetaTagTool = lazy(() => import('./pages/MetaTagTool'))
+const RobotsTool = lazy(() => import('./pages/RobotsTool'))
+const IpValidatorTool = lazy(() => import('./pages/IpValidatorTool'))
+const EmojiPickerTool = lazy(() => import('./pages/EmojiPickerTool'))
+const StopwatchTool = lazy(() => import('./pages/StopwatchTool'))
+const ColorPickerTool = lazy(() => import('./pages/ColorPickerTool'))
+const DrawTool = lazy(() => import('./pages/DrawTool'))
+const ScreenRecorderTool = lazy(() => import('./pages/ScreenRecorderTool'))
+const WhiteNoiseTool = lazy(() => import('./pages/WhiteNoiseTool'))
+const FontPreviewTool = lazy(() => import('./pages/FontPreviewTool'))
+const ColorBlindTool = lazy(() => import('./pages/ColorBlindTool'))
+const ScreenInfoTool = lazy(() => import('./pages/ScreenInfoTool'))
+const SoundMeterTool = lazy(() => import('./pages/SoundMeterTool'))
 const Base64Tool = lazy(() => import('./pages/Base64Tool'))
 const UrlTool = lazy(() => import('./pages/UrlTool'))
 const JsonTool = lazy(() => import('./pages/JsonTool'))
@@ -157,6 +186,34 @@ const TOOL_COMPONENTS: Record<string, React.LazyExoticComponent<React.ComponentT
   'pdf-rotate': PdfRotateTool,
   'pdf-reorder': PdfReorderTool,
   'pdf-remove': PdfPageRemoverTool,
+  'pdf-viewer': PdfViewerTool,
+  'plugin-manager': PluginManager,
+  morse: MorseTool,
+  'binary-text': BinaryTextTool,
+  'reverse-text': ReverseTextTool,
+  slug: SlugTool,
+  'line-number': LineNumberTool,
+  'remove-empty': RemoveEmptyTool,
+  'text-repeat': TextRepeatTool,
+  'char-count': CharCountTool,
+  percentage: PercentageTool,
+  'aspect-ratio': AspectRatioTool,
+  'unit-converter': UnitConverterTool,
+  'random-color': RandomColorTool,
+  'random-string': RandomStringTool,
+  'meta-tag': MetaTagTool,
+  robots: RobotsTool,
+  'ip-validator': IpValidatorTool,
+  'emoji-picker': EmojiPickerTool,
+  stopwatch: StopwatchTool,
+  'color-picker': ColorPickerTool,
+  draw: DrawTool,
+  'screen-recorder': ScreenRecorderTool,
+  'white-noise': WhiteNoiseTool,
+  'font-preview': FontPreviewTool,
+  'color-blind': ColorBlindTool,
+  'screen-info': ScreenInfoTool,
+  'sound-meter': SoundMeterTool,
 }
 
 function PageLoader() {
@@ -187,6 +244,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="category/:id" element={<CategoryPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="plugins/:id" element={<PluginPage />} />
           {toolRoutes.map(({ id, path, Comp }) => (
             <Route key={id} path={path} element={<Comp />} />
           ))}

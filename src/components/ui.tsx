@@ -107,7 +107,7 @@ export function Chip({ active, onClick, children }: {
 export function Textarea({ className = '', ...props }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <textarea
-      className={`w-full px-4 py-3.5 rounded-xl bg-[rgba(0,0,0,.25)] border border-white/[0.06] text-[#d0d8e0] text-sm placeholder:text-gray-600 focus:outline-none focus:border-[rgba(0,255,65,0.4)] focus:ring-2 focus:ring-[rgba(0,255,65,0.15)] focus:bg-[rgba(0,0,0,.35)] transition-all duration-200 resize-none font-mono ${className}`}
+      className={`w-full px-4 py-3.5 rounded-xl bg-[rgba(0,0,0,.25)] border border-white/[0.06] text-[#d0d8e0] text-sm placeholder:text-gray-600 focus:outline-none focus:border-[rgba(0,255,65,0.4)] focus:ring-2 focus:ring-[rgba(0,255,65,0.15)] focus:bg-[rgba(0,0,0,.35)] input-data-stream transition-all duration-200 resize-none font-mono ${className}`}
       style={{ caretColor: '#00ff41', textShadow: '0 0 1px rgba(0,255,65,.1)' }}
       {...props}
     />
@@ -117,7 +117,7 @@ export function Textarea({ className = '', ...props }: TextareaHTMLAttributes<HT
 export function Input({ className = '', ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
-      className={`w-full px-4 py-3 rounded-xl bg-[rgba(0,0,0,.25)] border border-white/[0.06] text-[#d0d8e0] text-sm placeholder:text-gray-600 focus:outline-none focus:border-[rgba(0,255,65,0.4)] focus:ring-2 focus:ring-[rgba(0,255,65,0.15)] focus:bg-[rgba(0,0,0,.35)] transition-all duration-200 font-mono ${className}`}
+      className={`w-full px-4 py-3 rounded-xl bg-[rgba(0,0,0,.25)] border border-white/[0.06] text-[#d0d8e0] text-sm placeholder:text-gray-600 focus:outline-none focus:border-[rgba(0,255,65,0.4)] focus:ring-2 focus:ring-[rgba(0,255,65,0.15)] focus:bg-[rgba(0,0,0,.35)] input-data-stream transition-all duration-200 font-mono ${className}`}
       style={{ caretColor: '#00ff41', textShadow: '0 0 1px rgba(0,255,65,.1)' }}
       {...props}
     />
@@ -220,4 +220,42 @@ export function ToolHeaderFav({ name, accent, accentColor = 'text-neon-cyan', gl
       </button>
     </div>
   )
+}
+
+/* ─── Pipeline: Send output to another tool ─── */
+import { useNavigate } from 'react-router-dom'
+import { Send } from 'lucide-react'
+import { usePipeline } from '../hooks/usePipeline.tsx'
+import { allTools } from '../utils/tools'
+
+export function PipeButton({ value, toolId, toolName }: { value: string; toolId: string; toolName: string }) {
+  const { push } = usePipeline()
+  const navigate = useNavigate()
+
+  if (!value) return null
+
+  /* Show quick-send targets: related tools */
+  const targets = allTools.filter(t => t.id !== toolId).slice(0, 5)
+
+  return (
+    <div className="flex items-center gap-1.5 flex-wrap">
+      {targets.map(t => (
+        <button key={t.id} onClick={() => { push(value, toolId, toolName); navigate(t.path) }}
+          className="text-[10px] px-2 py-1 rounded-lg bg-cyber-bg-deep border border-white/10 text-gray-500 hover:text-white hover:border-white/20 transition-all flex items-center gap-1">
+          <Send size={9} />{t.name}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+/* ─── Pipeline receiver hook ─── */
+export function usePipeInput(toolId: string): string | null {
+  const { entry, consume } = usePipeline()
+  if (entry && entry.fromTool !== toolId) {
+    const data = entry.data
+    consume()
+    return data
+  }
+  return null
 }

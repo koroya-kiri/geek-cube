@@ -13,6 +13,10 @@
   --clr-purple:  #b847f0;
   --clr-orange:  #ff6600;
   --clr-red:     #ff3366;
+  --clr-amber:   #ffaa00;
+  --theme-accent: var(--clr-cyan);
+  --theme-accent-2: var(--clr-magenta);
+  --theme-accent-rgb: 0, 240, 255;
   --fs-body: clamp(0.875rem, 1vw + 0.5rem, 1rem);
   --fs-sm:   clamp(0.75rem, 0.6vw + 0.4rem, 0.875rem);
   --fs-xs:   clamp(0.65rem, 0.4vw + 0.35rem, 0.75rem);
@@ -134,12 +138,44 @@ body {
 
 /* Result flash animation – brief highlight when output updates */
 @keyframes result-flash {
-  0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.3); }
-  50% { box-shadow: 0 0 12px 2px rgba(0, 240, 255, 0.15); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.4), inset 0 0 0px rgba(0, 255, 65, 0.1); }
+  30% { box-shadow: 0 0 20px 4px rgba(0, 255, 65, 0.2), inset 0 0 12px rgba(0, 255, 65, 0.08); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0), inset 0 0 0px rgba(0, 255, 65, 0); }
 }
 .result-flash {
-  animation: result-flash 0.6s ease-out;
+  animation: result-flash 0.8s ease-out;
+}
+
+/* Copy feedback – neon pulse */
+@keyframes copy-pop {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.15); filter: brightness(2) drop-shadow(0 0 6px rgba(0,255,65,.8)); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+.copy-pop { animation: copy-pop 0.4s var(--ease-spring); }
+
+/* Card scanline border animation */
+@keyframes card-scan {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 400% 0%; }
+}
+.card-glass.card-scan::after {
+  content: '';
+  position: absolute; inset: -1px; border-radius: inherit; z-index: -1; pointer-events: none;
+  background: linear-gradient(90deg, transparent 40%, rgba(0,255,65,.08) 50%, transparent 60%);
+  background-size: 400% 100%;
+  animation: card-scan 3s linear infinite;
+}
+
+/* Input focus data stream effect */
+@keyframes data-stream {
+  0% { background-position: 0 0; }
+  100% { background-position: 100% 0; }
+}
+.input-data-stream:focus {
+  background-image: linear-gradient(90deg, transparent 0%, rgba(0,255,65,.03) 30%, rgba(0,240,255,.05) 50%, rgba(0,255,65,.03) 70%, transparent 100%);
+  background-size: 200% 100%;
+  animation: data-stream 2s linear infinite;
 }
 
 /* ─── Click ripple effect ─── */
@@ -316,4 +352,26 @@ body {
   background-size: 60px 60px, 60px 60px, 120px 120px, 120px 120px;
   background-position: 0 0, 0 0, 30px 0, 0 30px;
   animation: circuit-pulse 6s ease-in-out infinite;
+}
+
+/* ─── Theme variants ─── */
+[data-theme="cyan"] {
+  --theme-accent: var(--clr-cyan);
+  --theme-accent-2: var(--clr-magenta);
+  --theme-accent-rgb: 0, 240, 255;
+}
+[data-theme="green"] {
+  --theme-accent: #00ff41;
+  --theme-accent-2: var(--clr-green);
+  --theme-accent-rgb: 0, 255, 65;
+}
+[data-theme="amber"] {
+  --theme-accent: #ffaa00;
+  --theme-accent-2: var(--clr-orange);
+  --theme-accent-rgb: 255, 170, 0;
+}
+[data-theme="magenta"] {
+  --theme-accent: var(--clr-magenta);
+  --theme-accent-2: var(--clr-purple);
+  --theme-accent-rgb: 255, 0, 170;
 }
