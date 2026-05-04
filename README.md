@@ -21,8 +21,14 @@
 ## 预览
 
 <div align="center">
-  <img src="public/screenshot.png" alt="Geek Cube 首页仪表盘" width="800" />
+  <img src="public/screenshot-1.png" alt="首页仪表盘 - 节点图视图" width="800" />
   <p><em>🏠 首页仪表盘 — 节点图可视化所有工具</em></p>
+  <br/>
+  <img src="public/screenshot-2.png" alt="工具页面示例" width="800" />
+  <p><em>🔧 工具页面 — 赛博朋克霓虹风格 UI</em></p>
+  <br/>
+  <img src="public/screenshot-3.png" alt="搜索与分类导航" width="800" />
+  <p><em>🔍 ⌘K 全局搜索 — 快速定位 100+ 工具</em></p>
 </div>
 
 ## 功能全景
