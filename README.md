@@ -20,9 +20,11 @@
 
 ## 预览
 
-![alt text](image-1.png)
-![alt text](image-2.png)
-![alt text](image-3.png)
+<div align="center">
+  <img src="public/screenshot.png" alt="Geek Cube 首页仪表盘" width="800" />
+  <p><em>🏠 首页仪表盘 — 节点图可视化所有工具</em></p>
+</div>
+
 ## 功能全景
 
 ### 📄 PDF 工具
